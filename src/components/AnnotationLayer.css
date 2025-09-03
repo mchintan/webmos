@@ -1,0 +1,130 @@
+.annotation-layer {
+  pointer-events: all;
+}
+
+.annotation {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.annotation:hover {
+  opacity: 0.8;
+}
+
+.annotation.selected {
+  opacity: 1;
+}
+
+/* Text annotations */
+.annotation-text {
+  cursor: pointer;
+  user-select: none;
+}
+
+.annotation-text:hover {
+  font-weight: bold;
+}
+
+.text-annotation.selected .annotation-text {
+  font-weight: bold;
+}
+
+/* Arrow annotations */
+.arrow-line,
+.arrow-head {
+  cursor: pointer;
+}
+
+.arrow-line:hover,
+.arrow-head:hover {
+  stroke-width: 3;
+}
+
+/* Circle annotations */
+.annotation-circle {
+  cursor: pointer;
+}
+
+.annotation-circle:hover {
+  stroke-width: 3;
+}
+
+/* Rectangle annotations */
+.annotation-rectangle {
+  cursor: pointer;
+}
+
+.annotation-rectangle:hover {
+  stroke-width: 3;
+}
+
+/* Measure annotations */
+.measure-line {
+  cursor: pointer;
+}
+
+.measure-line:hover {
+  stroke-width: 3;
+}
+
+.measure-text {
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.measure-point {
+  cursor: pointer;
+}
+
+.measure-point:hover {
+  r: 4;
+}
+
+/* Selection indicators */
+.selection-box {
+  pointer-events: none;
+  animation: selection-pulse 2s infinite;
+}
+
+@keyframes selection-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.control-point {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-point:hover {
+  r: 6;
+  fill: #0056b3;
+}
+
+/* Annotation states */
+.annotation.dragging {
+  opacity: 0.7;
+  cursor: grabbing;
+}
+
+.annotation.resizing {
+  cursor: nw-resize;
+}
+
+/* Tooltip styles */
+.annotation-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+}

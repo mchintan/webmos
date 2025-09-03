@@ -1,0 +1,90 @@
+.equation-input {
+  margin-bottom: 20px;
+}
+
+.equation-input form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.equation-input input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+  font-family: 'Courier New', monospace;
+}
+
+.equation-input input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.equation-input input.error {
+  border-color: #dc3545;
+}
+
+.input-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-selector {
+  position: relative;
+}
+
+.color-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.color-preview:hover {
+  border-color: #007bff;
+}
+
+.color-picker-popup {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  z-index: 1000;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+}
+
+.add-button {
+  flex: 1;
+  padding: 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-button:hover {
+  background: #0056b3;
+}
+
+.add-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
