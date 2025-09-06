@@ -1,0 +1,247 @@
+.advanced-tools {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e6ed;
+}
+
+.tools-header h3 {
+  margin: 0 0 16px 0;
+  color: #2d3748;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tool-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.tool-button:hover {
+  background: #edf2f7;
+  border-color: #4299e1;
+  transform: translateY(-1px);
+}
+
+.tool-button.active {
+  background: #4299e1;
+  border-color: #4299e1;
+  color: white;
+}
+
+.tool-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.tool-name {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Tool Input Section */
+.tool-input {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 12px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.tool-input input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  transition: border-color 0.2s;
+}
+
+.tool-input input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.calculate-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calculate-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3182ce, #2c5282);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
+
+.calculate-button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Result Section */
+.result-section {
+  background: #f0fff4;
+  border: 1px solid #9ae6b4;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.result-section h4 {
+  margin: 0 0 8px 0;
+  color: #2f855a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.result-display {
+  background: #c6f6d5;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #22543d;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+
+.add-to-graph-button {
+  padding: 8px 16px;
+  background: #48bb78;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-to-graph-button:hover {
+  background: #38a169;
+}
+
+/* Error Section */
+.error-section {
+  background: #fed7d7;
+  border: 1px solid #feb2b2;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #c53030;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-icon {
+  font-size: 16px;
+}
+
+/* Examples Section */
+.examples-section {
+  margin-top: 20px;
+}
+
+.examples-section h4 {
+  margin: 0 0 12px 0;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.examples-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.example-button {
+  padding: 6px 12px;
+  background: #edf2f7;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.example-button:hover {
+  background: #e2e8f0;
+  border-color: #a0aec0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .advanced-tools {
+    padding: 16px;
+  }
+
+  .tools-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tool-button {
+    padding: 8px 4px;
+  }
+
+  .tool-icon {
+    font-size: 14px;
+  }
+
+  .tool-name {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .examples-list {
+    flex-direction: column;
+  }
+
+  .example-button {
+    text-align: left;
+  }
+}

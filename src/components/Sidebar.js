@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ChromePicker } from 'react-color';
+import EquationInput from './EquationInput';
 import EquationList from './EquationList';
 import VoiceInput from './VoiceInput';
 import VideoUpload from './VideoUpload';
+import AdvancedTools from './AdvancedTools';
 import './Sidebar.css';
 
 const Sidebar = ({
@@ -16,85 +17,95 @@ const Sidebar = ({
   onVoiceInput,
   onVideoExtract
 }) => {
-  const [currentExpression, setCurrentExpression] = useState('');
-  const [currentColor, setCurrentColor] = useState('#ff0000');
-  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [activeTab, setActiveTab] = useState('equations');
 
-  const handleAddEquation = () => {
-    if (currentExpression.trim()) {
-      onAddEquation(currentExpression.trim(), currentColor);
-      setCurrentExpression('');
-      setCurrentColor('#ff0000');
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleAddEquation();
-    }
-  };
+  const tabs = [
+    { id: 'equations', label: 'Equations', icon: '📊' },
+    { id: 'tools', label: 'Tools', icon: '🔧' },
+    { id: 'analysis', label: 'Analysis', icon: '📈' }
+  ];
 
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h1>Math Graphing System</h1>
-        <p>Enter equations to plot on the graph</p>
+        <h1>WebMOS</h1>
+        <p>Professional Mathematical Graphing</p>
       </div>
-      
-      <div className="sidebar-content">
-        <div className="equation-input">
-          <input
-            type="text"
-            placeholder="Enter equation (e.g., y = sin(x), x^2 + y^2 = 4)"
-            value={currentExpression}
-            onChange={(e) => setCurrentExpression(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-          
-          <div className="color-selector">
-            <div 
-              className="color-preview"
-              style={{ backgroundColor: currentColor }}
-              onClick={() => setShowColorPicker(!showColorPicker)}
-            />
-            {showColorPicker && (
-              <div className="color-picker-popup">
-                <ChromePicker
-                  color={currentColor}
-                  onChange={(color) => setCurrentColor(color.hex)}
-                />
-              </div>
-            )}
-          </div>
-          
+
+      {/* Tab Navigation */}
+      <div className="sidebar-tabs">
+        {tabs.map(tab => (
           <button
-            className="add-button"
-            onClick={handleAddEquation}
-            disabled={!currentExpression.trim()}
+            key={tab.id}
+            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
           >
-            Add Equation
+            <span className="tab-icon">{tab.icon}</span>
+            <span className="tab-label">{tab.label}</span>
           </button>
-        </div>
-
-        <VoiceInput onVoiceInput={onVoiceInput} />
-        
-        <VideoUpload onVideoExtract={onVideoExtract} />
-        
-        <EquationList
-          equations={equations}
-          onDeleteEquation={onDeleteEquation}
-          onUpdateEquationColor={onUpdateEquationColor}
-          onUpdateEquation={onUpdateEquation}
-        />
+        ))}
       </div>
 
-      <div className="controls">
-        <button className="control-button" onClick={onClearGraph}>
-          Clear All Equations
-        </button>
-        <button className="control-button export" onClick={onExportGraph}>
-          Export as SVG
-        </button>
+      <div className="sidebar-content">
+        {activeTab === 'equations' && (
+          <>
+            <EquationInput onAddEquation={onAddEquation} />
+
+            <VoiceInput onVoiceInput={onVoiceInput} />
+
+            <VideoUpload onVideoExtract={onVideoExtract} />
+
+            <EquationList
+              equations={equations}
+              onDeleteEquation={onDeleteEquation}
+              onUpdateEquationColor={onUpdateEquationColor}
+              onUpdateEquation={onUpdateEquation}
+            />
+          </>
+        )}
+
+        {activeTab === 'tools' && (
+          <AdvancedTools
+            equations={equations}
+            addEquation={onAddEquation}
+          />
+        )}
+
+        {activeTab === 'analysis' && (
+          <div className="analysis-panel">
+            <h3>Graph Analysis</h3>
+            <div className="analysis-stats">
+              <div className="stat-item">
+                <span className="stat-label">Total Equations:</span>
+                <span className="stat-value">{equations.length}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Visible Equations:</span>
+                <span className="stat-value">{equations.filter(eq => eq.visible).length}</span>
+              </div>
+            </div>
+
+            <div className="analysis-actions">
+              <button className="analysis-button" onClick={onClearGraph}>
+                Clear All
+              </button>
+              <button className="analysis-button export" onClick={onExportGraph}>
+                Export Graph
+              </button>
+            </div>
+
+            <div className="analysis-info">
+              <h4>Supported Functions:</h4>
+              <ul>
+                <li>Trigonometric: sin, cos, tan, asin, acos, atan</li>
+                <li>Hyperbolic: sinh, cosh, tanh</li>
+                <li>Special: gamma, erf, besselj0, ellipticK</li>
+                <li>Statistical: normalPDF, normalCDF</li>
+                <li>Constants: pi, e, phi, c, h, hbar</li>
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

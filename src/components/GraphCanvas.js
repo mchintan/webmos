@@ -1,11 +1,18 @@
 import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import * as d3 from 'd3';
-import { evaluateExpression, parseEquation, parseUserInput } from '../utils/mathUtils';
-import { 
-  createAnnotation, 
-  screenToGraphCoords, 
+import {
+  evaluateExpression,
+  parseEquation,
+  parseUserInput,
+  generateParametricPoints,
+  generatePolarPoints,
+  generateAdaptivePoints
+} from '../utils/mathUtils';
+import {
+  createAnnotation,
+  screenToGraphCoords,
   isPointInAnnotation,
-  ANNOTATION_TYPES 
+  ANNOTATION_TYPES
 } from '../utils/annotationUtils';
 import AnnotationLayer from './AnnotationLayer';
 import AnnotationToolbar from './AnnotationToolbar';
@@ -160,22 +167,18 @@ const GraphCanvas = ({ equations, viewState, onViewStateChange, onResetView }) =
       // Parse user input to handle common mathematical notation
       const processedExpression = parseUserInput(expression);
       const parsed = parseEquation(processedExpression);
-      
+
       if (parsed.type === 'explicit') {
-        // Plot explicit function y = f(x)
-        const points = [];
-        const step = (viewState.xMax - viewState.xMin) / 1000;
-        
-        for (let x = viewState.xMin; x <= viewState.xMax; x += step) {
-          try {
-            const y = evaluateExpression(parsed.function, { x });
-            if (isFinite(y) && y >= viewState.yMin && y <= viewState.yMax) {
-              points.push([x, y]);
-            }
-          } catch (error) {
-            // Skip points that cause errors
-          }
-        }
+        // Use adaptive sampling for better performance and accuracy
+        const points = generateAdaptivePoints(
+          parsed.function,
+          viewState.xMin,
+          viewState.xMax,
+          1000
+        ).filter(point => {
+          const [, y] = point;
+          return y >= viewState.yMin && y <= viewState.yMax;
+        });
 
         if (points.length > 1) {
           const line = d3.line()
@@ -185,28 +188,87 @@ const GraphCanvas = ({ equations, viewState, onViewStateChange, onResetView }) =
 
           svg.append('path')
             .datum(points)
-            .attr('class', 'function-line')
+            .attr('class', `function-line-${equation.id}`)
             .attr('d', line)
             .attr('stroke', color)
             .attr('fill', 'none')
-            .attr('stroke-width', 2);
+            .attr('stroke-width', 2)
+            .attr('stroke-linecap', 'round')
+            .attr('stroke-linejoin', 'round');
+        }
+      } else if (parsed.type === 'parametric') {
+        // Plot parametric equations
+        const points = generateParametricPoints(
+          parsed.xFunction,
+          parsed.yFunction,
+          -2 * Math.PI,
+          2 * Math.PI,
+          1000
+        ).filter(point => {
+          const [x, y] = point;
+          return x >= viewState.xMin && x <= viewState.xMax &&
+                 y >= viewState.yMin && y <= viewState.yMax;
+        });
+
+        if (points.length > 1) {
+          const line = d3.line()
+            .x(d => xScale(d[0]))
+            .y(d => yScale(d[1]))
+            .curve(d3.curveCardinal);
+
+          svg.append('path')
+            .datum(points)
+            .attr('class', `parametric-line-${equation.id}`)
+            .attr('d', line)
+            .attr('stroke', color)
+            .attr('fill', 'none')
+            .attr('stroke-width', 2.5)
+            .attr('stroke-dasharray', '5,5');
+        }
+      } else if (parsed.type === 'polar') {
+        // Plot polar equations
+        const points = generatePolarPoints(
+          parsed.function,
+          0,
+          2 * Math.PI,
+          1000
+        ).filter(point => {
+          const [x, y] = point;
+          return x >= viewState.xMin && x <= viewState.xMax &&
+                 y >= viewState.yMin && y <= viewState.yMax;
+        });
+
+        if (points.length > 1) {
+          const line = d3.line()
+            .x(d => xScale(d[0]))
+            .y(d => yScale(d[1]))
+            .curve(d3.curveCardinal);
+
+          svg.append('path')
+            .datum(points)
+            .attr('class', `polar-line-${equation.id}`)
+            .attr('d', line)
+            .attr('stroke', color)
+            .attr('fill', 'none')
+            .attr('stroke-width', 2.5)
+            .attr('stroke-dasharray', '10,5');
         }
       } else if (parsed.type === 'implicit') {
-        // Plot implicit equation using contour method
-        const resolution = 100;
+        // Enhanced implicit plotting with better resolution
+        const resolution = 150;
         const xStep = (viewState.xMax - viewState.xMin) / resolution;
         const yStep = (viewState.yMax - viewState.yMin) / resolution;
-        
+
         const points = [];
-        
-        for (let i = 0; i < resolution; i++) {
-          for (let j = 0; j < resolution; j++) {
+
+        for (let i = 0; i <= resolution; i++) {
+          for (let j = 0; j <= resolution; j++) {
             const x = viewState.xMin + i * xStep;
             const y = viewState.yMin + j * yStep;
-            
+
             try {
               const result = evaluateExpression(parsed.expression, { x, y });
-              if (Math.abs(result) < 0.1) { // Threshold for implicit plotting
+              if (Math.abs(result) < 0.05) { // Tighter threshold for implicit plotting
                 points.push([x, y]);
               }
             } catch (error) {
@@ -223,12 +285,14 @@ const GraphCanvas = ({ equations, viewState, onViewStateChange, onResetView }) =
             .attr('class', `implicit-points-${equation.id}`)
             .attr('cx', d => xScale(d[0]))
             .attr('cy', d => yScale(d[1]))
-            .attr('r', 1)
-            .attr('fill', color);
+            .attr('r', 0.8)
+            .attr('fill', color)
+            .attr('opacity', 0.7);
         }
       }
     } catch (error) {
       console.error('Error plotting function:', error);
+      // Could add visual error indication here
     }
   }, [xScale, yScale, viewState]);
 
@@ -236,7 +300,9 @@ const GraphCanvas = ({ equations, viewState, onViewStateChange, onResetView }) =
     if (!svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('.function-line').remove();
+    svg.selectAll('[class^="function-line-"]').remove();
+    svg.selectAll('[class^="parametric-line-"]').remove();
+    svg.selectAll('[class^="polar-line-"]').remove();
     svg.selectAll('[class^="implicit-points-"]').remove();
   }, []);
 
@@ -267,6 +333,17 @@ const GraphCanvas = ({ equations, viewState, onViewStateChange, onResetView }) =
       tooltip.style('opacity', 0);
     });
   }, [xScale, yScale]);
+
+  // Annotation management functions
+  const addAnnotation = useCallback((annotation) => {
+    setAnnotations(prev => {
+      const newAnnotations = [...prev, annotation];
+      // Save to undo stack
+      setUndoStack(prevStack => [...prevStack, prev]);
+      setRedoStack([]);
+      return newAnnotations;
+    });
+  }, []);
 
   // Annotation event handlers
   const handleMouseDown = useCallback((event) => {
@@ -372,16 +449,6 @@ const GraphCanvas = ({ equations, viewState, onViewStateChange, onResetView }) =
   }, [isDrawing, drawingData, viewState, addAnnotation]);
 
   // Annotation management functions
-  const addAnnotation = useCallback((annotation) => {
-    setAnnotations(prev => {
-      const newAnnotations = [...prev, annotation];
-      // Save to undo stack
-      setUndoStack(prevStack => [...prevStack, prev]);
-      setRedoStack([]);
-      return newAnnotations;
-    });
-  }, []);
-
   const removeAnnotation = useCallback((id) => {
     setAnnotations(prev => {
       const newAnnotations = prev.filter(ann => ann.id !== id);

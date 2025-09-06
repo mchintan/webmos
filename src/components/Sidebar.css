@@ -24,6 +24,49 @@
   font-size: 14px;
 }
 
+/* Tab Navigation */
+.sidebar-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  color: #666;
+}
+
+.tab-button:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.tab-button.active {
+  background: #007bff;
+  color: white;
+  border-bottom: 3px solid #0056b3;
+}
+
+.tab-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.tab-label {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .sidebar-content {
   flex: 1;
   padding: 20px;
@@ -129,5 +172,105 @@
 
 .control-button.export:hover {
   background: #218838;
+}
+
+/* Analysis Panel */
+.analysis-panel {
+  padding: 0;
+}
+
+.analysis-panel h3 {
+  margin: 0 0 16px 0;
+  color: #2d3748;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.analysis-stats {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 16px;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.analysis-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.analysis-button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.analysis-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-button.export {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+}
+
+.analysis-button.export:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+}
+
+.analysis-info {
+  background: #f0f9ff;
+  border: 1px solid #90cdf4;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.analysis-info h4 {
+  margin: 0 0 12px 0;
+  color: #2b6cb0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.analysis-info ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.analysis-info li {
+  margin-bottom: 4px;
 }
 
